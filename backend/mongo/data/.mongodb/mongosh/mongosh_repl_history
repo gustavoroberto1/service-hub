@@ -1,0 +1,5 @@
+quit
+});
+  members: [{ _id: 0, host: "localhost:27017" }]
+  _id: "rs0",
+rs.initiate({

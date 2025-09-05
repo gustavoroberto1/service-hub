@@ -1,0 +1,115 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  NIVEL_1
+  NIVEL_2
+  NIVEL_3
+}
+
+model User {
+  id                      String       @id @map("_id")
+  name                    String
+  email                   String       @unique
+  password                String
+  role                    Role
+  avatar                  String?
+  created_at              DateTime
+  updated_at              DateTime     @updatedAt
+  created_attendances     Attendance[] @relation("created_by_id")
+  responsible_attendances Attendance[] @relation("responsible_id")
+
+  @@map("users")
+}
+
+type Contact {
+  phone String[]
+  email String[]
+}
+
+type Address {
+  postal_code  String
+  state_code   String
+  city         String
+  neighborhood String
+  street       String
+  number       Int
+}
+
+model Client {
+  id         String       @id @map("_id")
+  name       String
+  document   String       @unique
+  contact    Contact
+  address    Address[]
+  is_active  Boolean
+  Attendance Attendance[]
+
+  @@map("clients")
+}
+
+enum AttendanceType {
+  CORRECTIVE
+  ADAPTIVE
+  PREDICTIVE
+  PREVENTIVE
+}
+
+enum Priorit {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum Status {
+  OPEN
+  PROCESSING
+  VALIDATION
+  COMPLETED
+}
+
+type Author {
+  id    String
+  name  String
+  email String
+}
+
+type Comment {
+  id         String
+  author     Author
+  text       String
+  created_at DateTime
+  updated_at DateTime
+}
+
+model Attendance {
+  id                     String         @id @map("_id")
+  title                  String
+  description            String
+  attendance_type        AttendanceType
+  priorit                Priorit
+  status                 Status
+  estimate_hours         Int
+  additional_observation String
+  created_at             DateTime
+  updated_at             DateTime
+  comments               Comment[]
+
+  client    Client @relation(fields: [client_id], references: [id], onDelete: Restrict)
+  client_id String
+
+  created_by    User   @relation(name: "created_by_id", fields: [created_by_id], references: [id], onDelete: Restrict)
+  created_by_id String
+
+  responsible    User?   @relation(name: "responsible_id", fields: [responsible_id], references: [id], onDelete: SetNull)
+  responsible_id String?
+
+  @@map("attendances")
+}
