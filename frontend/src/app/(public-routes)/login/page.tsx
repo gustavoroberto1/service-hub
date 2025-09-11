@@ -1,6 +1,8 @@
+'use client'
+
 import { InputCustom } from '@/components/InputCustom';
-import styles from './styles.module.css'
 import { useState } from 'react';
+import styles from './styles.module.css';
 
 export default function Home() {
   const [email, setEmail] = useState<{ email: string, password: string}>();

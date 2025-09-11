@@ -1,27 +1,37 @@
-import 'fastify'
-import { FastifyReply } from 'fastify';
-import { FastifyJWT } from 'fastify-jwt';
+// src/@types/fastify-jwt.d.ts
+import '@fastify/jwt';
+import 'fastify';
+
+declare module '@fastify/jwt' {
+  interface FastifyJWT {
+    // payload do token
+    payload: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      avatar: string;
+      createdAt: string; // se você assina como string ISO
+      updatedAt: string;
+    };
+    // o que request.user terá após jwtVerify()
+    user: {
+      id: string;
+      name: string;
+      email: string;
+      role: string;
+      avatar: string;
+      createdAt: string;
+      updatedAt: string;
+    };
+  }
+}
 
 declare module 'fastify' {
-    interface FastifyRequest {
-        user: {
-            id: string;
-            name: string;
-            email: string;
-            role: string;
-            avatar: string;
-            createdAt: Date;
-            updatedAt: Date;
-        },
-        jwtVerify(): Promise<void>
-    }
-
-    interface FastifyInstance {
-        authenticate(request: FastifyRequest, reply: FastifyReply),
-        jwt: {
-            sign: FastifyJWT['sign'],
-            verify: FastifyJWT['verify'],
-            decode: FastifyJWT['decode']
-        }
-    }
+  interface FastifyInstance {
+    authenticate: (request: FastifyRequest, reply: FastifyReply) => Promise<void>;
+  }
 }
+
+export { };
+

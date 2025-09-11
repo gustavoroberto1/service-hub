@@ -1,14 +1,29 @@
+version: "3.9"
 services:
   mongo:
-    image: mongo:latest
-    container_name: mongodb
-    command: [ "--replSet", "rs0", "--bind_ip_all" ]
+    image: mongo:7
+    container_name: mongo
+    restart: unless-stopped
     ports:
-      - "27018:27017"
+      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: admin
       MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_REPLICA_SET_NAME: rs0
+    command: >
+      bash -c "
+        mongod --replSet rs0 --bind_ip_all --fork --logpath /var/log/mongodb.log &&
+        sleep 5 &&
+        mongosh --eval \"
+          rs.initiate({
+            _id: 'rs0',
+            members: [{ _id: 0, host: 'localhost:27017' }]
+          })
+        \" &&
+        tail -f /var/log/mongodb.log
+      "
     volumes:
-      - ./mongo/data:/data/db
-      - ./mongo/init:/docker-entrypoint-initdb.d
-    restart: unless-stopped
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:
