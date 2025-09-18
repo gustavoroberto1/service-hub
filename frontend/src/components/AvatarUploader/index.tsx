@@ -37,7 +37,7 @@ export default function AvatarUploader() {
       const formData = new FormData();
       formData.append('file', file);
 
-      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZkMjhkN2IwLTRmMTUtNDg5ZC1iOGRlLWRlZjE4OGYxNmZlOCIsIm5hbWUiOiJndXN0YXZvIiwiZW1haWwiOiJndXN0YXZvQGdtYWlsLmNvbSIsInJvbGUiOiJOSVZFTF8xIiwiYXZhdGFyIjpudWxsLCJjcmVhdGVkQXQiOiIyMDI1LTA5LTExVDE5OjM5OjA1LjMwOFoiLCJ1cGRhdGVkQXQiOiIyMDI1LTA5LTExVDE5OjM5OjA1LjMwOFoiLCJpYXQiOjE3NTc2MTk1NzR9.h-UFiuLKn26yeqVx1Pu-SfDiCa8wiomj8PFtfzOjVeY';
+      const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjhhOGUzNGU3LWNhYmQtNDM5MC1iMWQzLTc2NTg0ZWI4YzljYiIsIm5hbWUiOiJHdXN0YXZvIiwiZW1haWwiOiJndXN0YXZvMkBnbWFpbC5jb20iLCJyb2xlIjoiTklWRUxfMSIsImF2YXRhciI6bnVsbCwiY3JlYXRlZEF0IjoiMjAyNS0wOS0xMVQyMzoyMTowMy40NjdaIiwidXBkYXRlZEF0IjoiMjAyNS0wOS0xMVQyMzoyMTowMy40NjdaIiwiaWF0IjoxNzU3NjM0NDA1fQ.kCy3htsg0FTaU86esuaJ9nYPiJWhKfPDtssiAn27CRg';
 
       const response = await fetch('http://localhost:3333/profile/avatar', {
         method: 'PATCH',
@@ -54,7 +54,6 @@ export default function AvatarUploader() {
 
       setUploadStatus('success');
       
-      // Remove status após 3 segundos
       setTimeout(() => setUploadStatus('idle'), 3000);
 
     } catch (error) {
@@ -113,6 +112,8 @@ export default function AvatarUploader() {
             )}
           </button>
         </div>
+
+        <img src="http://localhost:3333/uploads/avatars/8a8e34e7-cabd-4390-b1d3-76584eb8c9cb_1757634630048.png" alt="" />
       </div>
 
       {/* Upload Button */}
