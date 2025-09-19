@@ -9,7 +9,6 @@ export default function PrivateLayout({ children }: { children: React.ReactNode 
 
 
   return <div>
-    {pathname === "/cliente" ? "Página de Clientes" : pathname === '/dashaboard' ? "Página de Dashaboard" : "Página de Atendimento"}
     {children}
   </div>;
 }
