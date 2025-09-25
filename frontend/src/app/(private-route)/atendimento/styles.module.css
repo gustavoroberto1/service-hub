@@ -1,0 +1,32 @@
+.container {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    justify-content: center;
+    padding-top: 200px;
+}
+
+.content {
+    width: 70%;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.item {
+    cursor: pointer;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: start;
+    border: 1px solid #666;
+    border-radius: 10px;
+}
+
+.item:hover {
+    background-color: #f1f1f1;
+}
