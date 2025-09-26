@@ -11,6 +11,11 @@ import authJwt from "./middleware/authJwt";
 
 const app = fastify();
 
+app.register(require('@fastify/static'), {
+  root: path.join(__dirname, '..', 'uploads'),
+  prefix: '/uploads/',
+})
+
 app.register(cors, {
     origin: true,
     methods: ["GET", "POST", "PATCH", "DELETE"]
@@ -31,10 +36,7 @@ app.register(userController)
 app.register(profileController)
 
 
-app.register(require('@fastify/static'), {
-  root: path.join(__dirname, 'uploads'),
-  prefix: '/uploads/',
-})
+
 
 const PORT = 3333;
 app.listen({ port: PORT }).then(() => {

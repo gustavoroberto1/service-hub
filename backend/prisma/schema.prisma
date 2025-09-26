@@ -3,7 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -11,47 +11,6 @@ enum Role {
   NIVEL_1
   NIVEL_2
   NIVEL_3
-}
-
-model User {
-  id                      String       @id @map("_id")
-  name                    String
-  email                   String       @unique
-  password                String
-  role                    Role
-  avatar                  String?
-  created_at              DateTime
-  updated_at              DateTime     @updatedAt
-  created_attendances     Attendance[] @relation("created_by_id")
-  responsible_attendances Attendance[] @relation("responsible_id")
-
-  @@map("users")
-}
-
-type Contact {
-  phone String[]
-  email String[]
-}
-
-type Address {
-  postal_code  String
-  state_code   String
-  city         String
-  neighborhood String
-  street       String
-  number       Int
-}
-
-model Client {
-  id         String       @id @map("_id")
-  name       String
-  document   String       @unique
-  contact    Contact
-  address    Address[]
-  is_active  Boolean
-  Attendance Attendance[]
-
-  @@map("clients")
 }
 
 enum AttendanceType {
@@ -75,22 +34,68 @@ enum Status {
   COMPLETED
 }
 
-type Author {
-  id    String
-  name  String
-  email String
+model User {
+  id         String   @id
+  name       String
+  email      String   @unique
+  password   String
+  role       Role
+  avatar     String?
+  created_at DateTime
+  updated_at DateTime @updatedAt
+
+  created_attendances     Attendance[] @relation("created_by")
+  responsible_attendances Attendance[] @relation("responsible")
+
+  @@map("users")
 }
 
-type Comment {
-  id         String
-  author     Author
-  text       String
-  created_at DateTime
-  updated_at DateTime
+model Client {
+  id        String   @id
+  name      String
+  document  String   @unique
+  phones    String[]
+  emails    String[]
+  is_active Boolean  @default(true)
+
+  addresses  Address[]
+  Attendance Attendance[]
+
+  @@map("clients")
+}
+
+model Address {
+  id           String @id
+  postal_code  String
+  state_code   String
+  city         String
+  neighborhood String
+  street       String
+  number       Int
+
+  client    Client @relation(fields: [client_id], references: [id], onDelete: Restrict)
+  client_id String
+
+  @@map("addresses")
+}
+
+model Comment {
+  id           String   @id
+  author_id    String
+  author_name  String
+  author_email String
+  text         String
+  created_at   DateTime
+  updated_at   DateTime @updatedAt
+
+  attendance    Attendance @relation(fields: [attendance_id], references: [id], onDelete: Cascade)
+  attendance_id String
+
+  @@map("comments")
 }
 
 model Attendance {
-  id                     String         @id @map("_id")
+  id                     String         @id
   title                  String
   description            String
   attendance_type        AttendanceType
@@ -99,17 +104,18 @@ model Attendance {
   estimate_hours         Int
   additional_observation String
   created_at             DateTime
-  updated_at             DateTime
-  comments               Comment[]
+  updated_at             DateTime       @updatedAt
 
   client    Client @relation(fields: [client_id], references: [id], onDelete: Restrict)
   client_id String
 
-  created_by    User   @relation(name: "created_by_id", fields: [created_by_id], references: [id], onDelete: Restrict)
+  created_by    User   @relation("created_by", fields: [created_by_id], references: [id], onDelete: Restrict)
   created_by_id String
 
-  responsible    User?   @relation(name: "responsible_id", fields: [responsible_id], references: [id], onDelete: SetNull)
+  responsible    User?   @relation("responsible", fields: [responsible_id], references: [id], onDelete: SetNull)
   responsible_id String?
+
+  comments Comment[]
 
   @@map("attendances")
 }

@@ -7,30 +7,17 @@ export async function profileController(app: FastifyInstance) {
     { preHandler: [app.authenticate] },
     async (request: FastifyRequest, reply: FastifyReply) => {
       const { id } = request.user as { id: string };
+      const dados = request.body;
       
       try {
-        // Debug logs
-        console.log('Headers:', request.headers);
-        console.log('Content-Type:', request.headers['content-type']);
-        console.log('Is multipart:', request.isMultipart());
-        
-        // Pega o arquivo
         const file = await request.file();
-        console.log('File received:', file ? 'YES' : 'NO');
         
         if (!file) {
           return reply.code(400).send({ 
             erro: "Nenhum arquivo foi enviado" 
           });
         }
-        
-        console.log('File details:', {
-          filename: file.filename,
-          mimetype: file.mimetype,
-          encoding: file.encoding
-        });
-        
-        // Valida se é imagem
+ 
         if (!file.mimetype.startsWith('image/')) {
           return reply.code(400).send({ 
             erro: "Arquivo deve ser uma imagem" 
